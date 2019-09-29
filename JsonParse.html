@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>Document</title>
+   <style>
+      *{
+         padding: 0;
+         margin: 0;
+      }
+      .container{
+         margin: 20px;
+      }
+   </style>
+</head>
+<body>
+   <div class="container">
+      <h3 style="font-size: 20px;">Id</h3>
+   </div>
+   <script>
+      function createElement() {
+         let container = document.querySelector('.container');
+         return function(elem, name){
+            let div = document.createElement('div');
+            let span = document.createElement('span');
+            span.innerText = name;
+            div.innerText = `${elem} - `;
+            div.append(span);
+            container.append(div);
+         }
+      }
+      let addElem = createElement();
+      let promise = new Promise((resolve, reject) => {
+         let xhr = new XMLHttpRequest();
+         xhr.responseType = 'json';
+         xhr.open('GET', 'https://jsonplaceholder.typicode.com/users');
+         xhr.send(); 
+         xhr.addEventListener('load', () => {
+            if (xhr.status == 200) resolve(xhr.response);
+            else reject(new Error('Request was failed'));
+         });
+      });
+      promise.then(
+         result => {
+            result.forEach(item => {
+               let id = Object.getOwnPropertyNames(item)[0];
+               let name = Object.getOwnPropertyNames(item)[1]
+               addElem(item['id'], item['name']);
+            });
+         },
+         error => alert(error)
+      )  
+   </script>
+</body>
+</html>
